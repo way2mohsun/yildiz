@@ -1,0 +1,191 @@
+<link rel="stylesheet" type="text/css" href="css/scheduler.css"/>
+<script type="text/javascript" src="js/scheduler.js"></script>
+<a href="#" style="margin-left: 5%" id="refresh">
+    <span class="glyphicon glyphicon-refresh" aria-hidden="true" style="font-size: 1.7em;"></span>
+</a>
+<a href="#">
+    <span class="glyphicon glyphicon-plus-sign" 
+          aria-hidden="true" data-toggle="modal"
+          data-target="#squarespaceModal" style="font-size: 2em;">
+    </span>
+</a>
+<br>
+
+<table id="service-table" 
+       class="table table-condensed table-striped" 
+       data-show-columns="true" style="width: 90%;table-layout: fixed;word-wrap: break-word;" align="center">
+    <thead>
+        <tr>
+            <td><label id="refresh-message" class="control-label">   Refreshing .....</label></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><label class="control-label">Start-Date</label></td>
+            <td><label class="control-label">Message</label></td>
+            <td><label class="control-label">Short-Code</label></td>
+            <td><label class="control-label">Service-Key</label></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </thead>
+</table>
+
+<div class="modal fade" id="squarespaceModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#F5ECCE">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h3 class="modal-title" id="lineModalLabel">Create Scheduler Bulk</h3>
+            </div>
+            <div class="modal-body" id="create-job">
+                <table style="width: 100%">
+                    <tr>
+                        <td>
+                            <label for="startup-date">Startup-Date</label>
+                            <input type="text" class="form-control datepicker" id="startup-date" placeholder="yyyy/MM/dd">
+                        </td>
+                        <td>
+                            <label for="startup-time">Startup-Time</label>
+                            <input type="text" class="form-control input-small" id="startup-time" placeholder="mm:dd">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="short-code">Short-Code</label>
+                            <input type="text" class="form-control" id="short-code" placeholder="short-code">
+                        </td>
+                        <td>
+                            <label for="service-key">Service-Key</label>
+                            <input type="text" class="form-control" id="service-key" placeholder="service-key">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" placeholder="usename" value="matel">
+                        </td>
+                        <td>
+                            <label for="password">Password</label>
+                            <input type="text" class="form-control" id="password" placeholder="password" value="af7fcc76dc659eb72eb32d2f088a54f4">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="domain">Domain</label>
+                            <input type="text" class="form-control" id="domain" placeholder="domain" value="alladmin">
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                </table>
+                <br>
+                <label for="exampleInputFile">Phone Numbers</label>
+                <p class="help-block">Please choose a text file!</p>
+                <input type="file" name="upload" id="upload" accept="text/plain">
+                <label for="comment">Message</label>
+                <textarea class="form-control" rows="5" id="message" maxlength="700" style="resize: none"></textarea>
+            </div>
+            <div>
+                <div class="btn-group btn-group-justified" role="group" aria-label="group button">
+                    <div class="btn-group" role="group">
+                        <!--<button id="close" type="button" class="btn btn-default" data-dismiss="modal" role="button">Close</button>-->
+                        <button id="close" type="button" class="btn btn-default btn-lg" data-dismiss="modal" role="button"  ><span class="glyphicon glyphicon-asterisk"></span> Close</button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <!--<button type="button" id="save" class="btn btn-default btn-hover-green" data-action="save" role="button">Save</button>-->
+                        <button id="save" type="button" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-ok-sign"></span> Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+</script>
+<div class="modal fade" id="modal-delete" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button>
+                <h4 class="modal-title custom_align" id="Heading">Delete this entry</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign">
+                    </span> Are you sure you want to delete this Record?</div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-success" id="delete-confirmation"><span class="glyphicon glyphicon-ok-sign"></span> Yes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> No</button>
+            </div>
+        </div>
+        <!-- /.modal-content --> 
+    </div>
+    <!-- /.modal-dialog --> 
+</div>
+
+<div class="modal fade" id="modal-edit" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                <h4 class="modal-title custom_align" id="Heading">Edit Your Detail</h4>
+            </div>
+            <div class="modal-body" id="edit-job">
+                <table style="width: 100%">
+                    <tr>
+                        <td>
+                            <label for="startup-date">Startup-Date</label>
+                            <input type="text" class="form-control datepicker" id="edit-startup-date" placeholder="startup date">
+                        </td>
+                        <td>
+                            <label for="startup-time">Startup-Time</label>
+                            <input type="text" class="form-control" id="edit-startup-time" placeholder="14:10">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="short-code">Short-Code</label>
+                            <input type="text" class="form-control" id="edit-short-code" placeholder="short-code">
+                        </td>
+                        <td>
+                            <label for="service-key">Service-Key</label>
+                            <input type="text" class="form-control" id="edit-service-key" placeholder="service-key">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="edit-username">Username</label>
+                            <input type="text" class="form-control" id="edit-username" placeholder="usename">
+                        </td>
+                        <td>
+                            <label for="edit-password">Password</label>
+                            <input type="text" class="form-control" id="edit-password" placeholder="password">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="edit-domain">Domain</label>
+                            <input type="text" class="form-control" id="edit-domain" placeholder="domain">
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                </table>
+                <br>
+                <label for="comment">Message</label>
+                <textarea class="form-control" rows="5" id="edit-message" maxlength="300" style="resize: none"></textarea>
+            </div>
+            <div class="modal-footer ">
+                <button id="edit-confirmation" type="button" class="btn btn-warning btn-lg" style="width: 100%;"><span class="glyphicon glyphicon-ok-sign"></span> Update</button>
+            </div>
+        </div>
+    </div>
+</div>

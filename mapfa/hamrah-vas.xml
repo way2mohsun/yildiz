@@ -1,0 +1,41 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <tem:MessageListUploadWithServiceId>
+         <!--Optional:-->
+         <tem:username>mateh</tem:username>
+         <!--Optional:-->
+         <tem:password>mateh@Hamrah.mci</tem:password>
+         <!--Optional:-->
+         <tem:numberList>
+            <!--Zero or more repetitions:-->
+            <tem:string>09124549919</tem:string>
+         </tem:numberList>
+         <!--Optional:-->
+         <tem:contentList>
+            <!--Zero or more repetitions:-->
+            <tem:string>Hi This is a test!!!</tem:string>
+         </tem:contentList>
+         <!--Optional:-->
+         <tem:origShortCodeList>
+            <!--Zero or more repetitions:-->
+            <tem:string>30568</tem:string>
+         </tem:origShortCodeList>
+         <!--Optional:-->
+         <tem:serviceIdList>
+            <!--Zero or more repetitions:-->
+            <tem:int>1666</tem:int>
+         </tem:serviceIdList>
+         <!--Optional:-->
+         <tem:MsgTypeCodeList>
+            <!--Zero or more repetitions:-->
+            <tem:int>0</tem:int>
+         </tem:MsgTypeCodeList>
+         <!--Optional:-->
+         <tem:chargeCodeNumberList>
+            <!--Zero or more repetitions:-->
+            <tem:int>00</tem:int>
+         </tem:chargeCodeNumberList>
+      </tem:MessageListUploadWithServiceId>
+   </soapenv:Body>
+</soapenv:Envelope>

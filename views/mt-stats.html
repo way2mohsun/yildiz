@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script>
+        $(document).ready(function () {
+            $("#from").datepicker({
+                //showOtherMonths: true,
+                //selectOtherMonths: true,
+                //changeMonth: true,
+                //changeYear: true,
+                //maxDate: -1,
+                dateFormat: "yy/mm/dd"
+            });
+            $("#to").datepicker({
+                //maxDate: -1,
+                dateFormat: "yy/mm/dd"
+            });
+            $.ajax({
+                async: false, type: 'POST', url: "mt-stats", timeout: 10000,
+                data: {
+                    functionality: 'get services'
+                },
+                success: function (data) {
+                    $.each(data, function (key, value) {
+                        $('#service').append($("<option></option>").attr("value", value.service_id).text(value.comment));
+                    });
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).on('click', '#mt-stats', function (e) {
+            
+            $.ajax({
+                async: false, type: 'POST', url: "mt-stats", timeout: 20000,
+                data: {
+                    functionality: 'stats',
+                    service: $('#service').val(),
+                    type: $('#type').val(),
+                    from: j2g($('#from').val()),
+                    to: j2g($('#to').val())
+                },
+                success: function (data) {
+                    $('#result').text('count : ' + data);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="col-md-12">
+    <div class="modal-dialog" style="margin-bottom:1; width: 25%">
+        <div class="modal-content">
+            <div class="panel-heading">
+                <h3 class="panel-title">MT Stats</h3>
+            </div>
+            <div class="panel-body">
+                <table>
+                    <tr>
+                        <td>Service</td>
+                        <td><select id="service" class="form-control datepicker">
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <td>Type</td>
+                        <td><select id="type" class="form-control datepicker">
+                            <option value="00">free</option>
+                            <option value="01">non-free</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <td>From</td>
+                        <td><input type="text" class="form-control datepicker" id="from" placeholder="yyyy/MM/dd"></td>
+                    </tr>
+                    <tr>
+                        <td>To</td>
+                        <td><input type="text" class="form-control datepicker" id="to" placeholder="yyyy/MM/dd"></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#" id="mt-stats" class="btn btn-sm btn-success">Stats</a></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><label id="result" class="control-label"></label></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

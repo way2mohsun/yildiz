@@ -1,0 +1,279 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        fillServiceTable();
+        service_type();
+    });
+
+    function service_type() {
+        $.ajax({
+            async: false, type: 'POST', url: "service", timeout: 10000,
+            data: {
+                functionality: 'srv type'
+            },
+            success: function (data) {
+                $.each(data, function (key, value) {
+                    $('#service-type').append($("<option></option>").attr("value", value.id).text(value.name));
+                });
+                if (data.length > 0)
+                    service_type_selected = data[0].id;
+            },
+            error: function (xhr, textStatus, err) {
+                window.location = "/";
+            }
+        });
+    }
+
+    function fillServiceTable() {
+        $("#service-table tbody").remove();
+        $('#service-table').append('<tbody></tbody>');
+        $.ajax({
+            async: false, type: 'POST', url: "service", timeout: 10000,
+            data: {
+                functionality: 'getAll'
+            },
+            success: function (data) {
+                services = data;
+                var t = '';
+                $.each(data, function (index, row) {
+                    t = '<tr id="' + row.id + '">\
+                        <td>' + row.comment + '</td>\
+                        <td>' + row.type + '</td>\
+                        <td>' + row.promotion + '</td>\
+                        <td>' + row.receive_scode + '</td>\
+                        <td>' + row.service_id + '</td>';
+                    if (row.head === null)
+                        t += '<td><p data-placement="top">\
+                            <button id="edit-sp-' + row.id + '" \
+                            class="btn btn-primary btn-xs" data-toggle="modal" \
+                            data-target="#service-property"><span class="glyphicon glyphicon-equalizer"></span></button></p></td>';
+                    else
+                        t += '<td></td>';
+
+                    /*t += '<td><p data-placement="top">\
+                            <button id="edit-srv-' + row.id + '" \
+                            class="btn btn-default btn-xs" data-toggle="modal" \
+                            data-target="#service-property"><span class="glyphicon glyphicon-pencil"></span></button></p></td>';
+                            */
+                    t += '<td><p data-placement="top">\
+                            <button id="delete-srv-' + row.id + '" \
+                            class="btn btn-danger btn-xs" data-toggle="modal" \
+                            data-target="#modal-delete-srv"><span class="glyphicon glyphicon-trash"></span></button></p></td>';
+
+                    t += '</tr>';
+                    $('#service-table').append(t);
+                });
+            },
+            error: function (err) {
+            }
+        });
+    }
+
+    function fillServiceProperty(id) {
+        $("#sp-table tbody").remove();
+        var t = '';
+        $.ajax({
+            async: false, type: 'POST', url: "service", timeout: 10000,
+            data: {
+                functionality: 'get prop',
+                id: id
+            },
+            success: function (data) {
+                //console.log(JSON.stringify(data));
+                service_properties = data;
+                $.each(data, function (index, row) {
+                    t = '<tr><td>\
+                            <label id="sp-key-' + row.id + '">' + row.key + '</label>\
+                            <textarea id="sp-value-' + row.id + '" dir="RTL" class="form-control" rows="5" style="resize: none" lang="ar">' + row.value + '</textarea>\
+                            <button id="delete-sp-btn-' + row.id + '" class="glyphicon glyphicon-remove">\
+                                <span  aria-hidden="true"></span>\
+                            </button>\
+                        </td></tr>';
+                    $('#sp-table').append(t);
+                });
+            },
+            error: function (err) {
+            }
+        });
+    }
+</script>
+
+<a href="#" style="margin-left: 5%">
+    <span class="glyphicon glyphicon-plus-sign" 
+          aria-hidden="true" data-toggle="modal"
+          data-target="#create-service" style="font-size: 2em;">
+    </span>
+</a>
+<br>
+
+<table id="service-table" 
+       class="table table-condensed table-striped" 
+       data-show-columns="true" style="width: 90%;" align="center">
+    <thead>
+        <tr>
+            <td><label><span>name</span></label></td>
+            <td><label><span>Type</span></label></td>
+            <td><label><span>Promotion</span></label></td>
+            <td><label><span>SCode</span></label></td>
+            <td><label><span>Service</span></label></td>
+            <td><label><span>Prop</span></label></td>
+            <!--<td><label><span>Edit</span></label></td>-->
+            <td><label><span>Delete</span></label></td>
+        </tr>
+    </thead>
+</table>
+
+<div class="modal fade" id="service-property" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#F5ECCE">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h3 class="modal-title" id="lineModalLabel">Properties</h3>
+            </div>
+            <div class="modal-body">
+                <a href="#" id="new-sp">
+                    <span class="glyphicon glyphicon-plus-sign" style="font-size: 2em;"></span>
+                </a>
+                <table style="width: 100%" id="sp-table"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create-service" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#F5ECCE">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h3 class="modal-title" id="lineModalLabel">Create Service</h3>
+            </div>
+            <div class="modal-body" id="create-job">
+                <table style="width: 95%">
+                    <tr>
+                        <td>
+                            <label for="comment">EN-Name</label>
+                            <input type="text" class="form-control datepicker" id="srv-new-en-name"/>
+                        </td>
+                        <td>
+                            <label for="comment">FA-Name</label>
+                            <input type="text" class="form-control datepicker" id="srv-new-fa-name"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="comment">Short-Code</label>
+                            <input type="text" class="form-control datepicker" id="srv-new-scode"/>
+                        </td>
+                        <td>
+                            <label for="comment">Service-id</label>
+                            <input type="text" class="form-control datepicker" id="srv-new-service-id"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="comment">Type</label>
+                            <select id="service-type" class="form-control datepicker">
+                            </select>
+                        </td>
+                        <td>
+                            <label for="comment">Promotion</label>
+                            <input type="text" class="form-control datepicker" id="srv-new-promotion"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <div class="btn-group btn-group-justified" role="group" aria-label="group button">
+                    <div class="btn-group" role="group">
+                        <!--<button id="close" type="button" class="btn btn-default" data-dismiss="modal" role="button">Close</button>-->
+                        <button id="close" type="button" class="btn btn-default btn-lg" data-dismiss="modal" role="button"  ><span class="glyphicon glyphicon-asterisk"></span> Close</button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <!--<button type="button" id="save" class="btn btn-default btn-hover-green" data-action="save" role="button">Save</button>-->
+                        <button id="save" type="button" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-ok-sign"></span> Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="update-service" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#F5ECCE">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h3 class="modal-title" id="lineModalLabel">Create Service</h3>
+            </div>
+            <div class="modal-body" id="create-job">
+                <table style="width: 95%">
+                    <tr>
+                        <td>
+                            <label for="comment">EN-Name</label>
+                            <input type="text" class="form-control datepicker" id="srv-new-en-name"/>
+                        </td>
+                        <td>
+                            <label for="comment">FA-Name</label>
+                            <input type="text" class="form-control datepicker" id="srv-new-fa-name"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="comment">Short-Code</label>
+                            <input type="text" class="form-control datepicker" id="srv-new-scode"/>
+                        </td>
+                        <td>
+                            <label for="comment">Service-id</label>
+                            <input type="text" class="form-control datepicker" id="srv-new-service-id"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="comment">Type</label>
+                            <select id="service-type" class="form-control datepicker">
+                            </select>
+                        </td>
+                        <td>
+                            <label for="comment">Promotion</label>
+                            <input type="text" class="form-control datepicker" id="srv-new-promotion"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <div class="btn-group btn-group-justified" role="group" aria-label="group button">
+                    <div class="btn-group" role="group">
+                        <!--<button id="close" type="button" class="btn btn-default" data-dismiss="modal" role="button">Close</button>-->
+                        <button id="close" type="button" class="btn btn-default btn-lg" data-dismiss="modal" role="button"  ><span class="glyphicon glyphicon-asterisk"></span> Close</button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <!--<button type="button" id="save" class="btn btn-default btn-hover-green" data-action="save" role="button">Save</button>-->
+                        <button id="save" type="button" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-ok-sign"></span> Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-delete-srv" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button>
+                <h4 class="modal-title custom_align" id="Heading">Delete this entry</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign">
+                    </span> Are you sure you want to delete this Record?</div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-success" id="delete-service-confirmation"><span class="glyphicon glyphicon-ok-sign"></span> Yes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> No</button>
+            </div>
+        </div>
+        <!-- /.modal-content --> 
+    </div>
+    <!-- /.modal-dialog --> 
+</div>

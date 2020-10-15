@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <script>
+            var service_id = 'Atse Interactive';
+            function fillTable() {
+                $("#table tbody").remove();
+                $('#table').append('<tbody></tbody>');
+                $.ajax({
+                    async: false, type: 'POST', url: "2night-notification", timeout: 20000,
+                    data: {
+                        functionality: 'get'
+                    },
+                    success: function (data) {
+                        $.each(data, function (index, row) {
+                            $('#table').append(
+                                    '<tr>' +
+                                    '<td>' + (index + 1) + '</td>' +
+                                    '<td>' + row.message + '</td>' +
+                                    '<td>' + g2j(row.def.substring(0, 10)).toFaDigit() + '</td>' +
+                                    '</tr>');
+                        });
+                    }
+                });
+            }
+        </script>
+        <script>
+            $(document).ready(function () {
+                fillTable();
+                var text_max = 300;
+                $('#textarea_feedback').html(text_max + ' characters remaining');
+
+                $('#message').keyup(function () {
+                    var text_length = $('#message').val().length;
+                    var text_remaining = text_max - text_length;
+                    $('#textarea_feedback').html(text_remaining + ' characters remaining');
+                });
+            });
+        </script>
+        <script>
+            $('#confirmation').click(function () {
+                $('#submit-message').modal('toggle');
+                $('#msg').text();
+                if ($('#message').val().length < 10) {
+                    $('#msg').text('Message Length is too short!').css('color', 'red');
+                    return;
+                }
+                if ($('#message').val().length > 305) {
+                    $('#msg').text('Message Length is too larg!').css('color', 'red');
+                    return;
+                }
+                $.ajax({
+                    async: false, type: 'POST', url: "2night-notification", timeout: 20000,
+                    data: {
+                        functionality: 'send message',
+                        message: $('#message').val()
+                    },
+                    success: function (data) {
+                        fillTable();
+                        $('#message').val('');
+                        $('#msg').text('Message has been sent.').css('color', 'green');
+
+                    }, 
+                    error: function (xhr, textStatus, err) {
+                        console.log(err);
+                        console.log(xhr);
+                        $('#msg').text(xhr.responseText).css('color', 'red');
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div class="col-md-12" >
+            <div class="modal-dialog" style="margin-bottom:1; width: 60%">
+                <div class="modal-content">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Notification </h3>
+                    </div>
+                    <div class="panel-body">
+                        <table style="width: 100%">
+                            <tr>
+                                <td style="width: 10%">message</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><textarea class="form-control" rows="10" id="message" maxlength="300" style="resize: none;width: 100%"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><div id="textarea_feedback"></div></td>
+                            </tr>
+                            <tr>
+                                <td><button class="btn btn-sm btn-success" data-toggle="modal" data-target="#submit-message">Submit</button></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><label id="msg"></label></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table id="table" 
+               class="table table-condensed table-striped" 
+               data-show-columns="true" style="width: 90%;table-layout: fixed;word-wrap: break-word;" align="center">
+            <thead>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label class="control-label">Index</label></td>
+                    <td><label class="control-label">Message</label></td>
+                    <td><label class="control-label">Date</label></td>
+                </tr>
+            </thead>
+        </table>
+        <div class="modal fade" id="submit-message" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </button>
+                        <h4 class="modal-title custom_align" id="Heading">Submit this message</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign">
+                            </span> Are you sure you want to submit this message?</div>
+                    </div>
+                    <div class="modal-footer ">
+                        <button type="button" class="btn btn-success" id="confirmation"><span class="glyphicon glyphicon-ok-sign"></span> Yes</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

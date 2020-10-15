@@ -1,0 +1,56 @@
+<script>
+    $(document).ready(function () {
+        $("#service-table tbody").remove();
+        $('#service-table').append('<tbody></tbody>');
+        $.ajax({
+            async: false,
+            type: 'POST',
+            url: "/scheduler-bulk",
+            timeout: 5000,
+            data: {
+                functionality: 'getHistory'
+            },
+            success: function (data) {
+                ///console.log(JSON.stringify(data));
+                $.each(data, function (index, row) {
+                    /*if (row.message.length > 50) {
+                        row.message = row.message.substring(0, 50) + ' ...';
+                    }*/
+                    $('#service-table').append(
+                            '<tr id="' + row.id + '"><td><span>' + g2j(row.startup.substring(0, 10)).toFaDigit() + ' ' + row.startup.substring(11, 16).toFaDigit() + '</span></td>' +
+                            '<td>' + row.message + '</td>' +
+                            '<td>' + row.short_code + '</td>' +
+                            '<td>' + row.service_key + '</td></tr>');
+                });
+            },
+            error: function (err) {
+                //console.log(JSON.stringify(err));
+                var msg = '<div id="error" class="alert alert-danger" role="alert">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                        '<span aria-hidden="true">&times;</span></button>' +
+                        '<strong>Oh snap!</strong> ' + err.responseText +
+                        '</div>';
+                $('#service-table').append(msg);
+            }
+        });
+    });
+</script>
+
+<table id="service-table" 
+       class="table table-condensed table-striped" 
+       data-show-columns="true" style="width: 90%;table-layout: fixed;word-wrap: break-word;" align="center">
+    <thead>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><label class="control-label">Start-Date</label></td>
+            <td><label class="control-label">Message</label></td>
+            <td><label class="control-label">Short-Code</label></td>
+            <td><label class="control-label">Service-Key</label></td>
+        </tr>
+    </thead>
+</table>
